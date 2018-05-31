@@ -34,19 +34,19 @@ public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.camera_view,parent,false);
         final ViewHolder viewHolder = new ViewHolder(view);
-//        viewHolder.cardView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                int position=viewHolder.getAdapterPosition();
-//                Camera camera = mCameraList.get(position);
-//                Intent intent= new Intent(mContext,CameraActivity.class);
-//                intent.putExtra(CameraActivity.FRUIT_NAME,camera.getName());
-//                intent.putExtra(CameraActivity.FRUIT_IMAGE_ID,camera.getImageId());
-//                mContext.startActivity(intent);
-//            }
-//        });
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int position=viewHolder.getAdapterPosition();
+                Camera camera = mCameraList.get(position);
+                Intent intent= new Intent(mContext,CameraActivity.class);
+                intent.putExtra(CameraActivity.CAMERA_NAME,camera.getName());
+                intent.putExtra(CameraActivity.CAMERA_IMAGE_ID,camera.getImageId());
+                mContext.startActivity(intent);
+            }
+        });
         return viewHolder;
 
 
