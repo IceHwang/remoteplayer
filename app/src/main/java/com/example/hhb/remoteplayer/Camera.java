@@ -8,11 +8,14 @@ public class Camera
 
     private int imageId;
 
-    public Camera(String id,String place,int imageId)
+    private String url;
+
+    public Camera(String id,String place,int imageId,String url)
     {
         this.id=id;
         this.place=place;
         this.imageId=imageId;
+        this.url=url;
     }
 
     public String getId()
@@ -33,6 +36,11 @@ public class Camera
     public int getImageId()
     {
         return imageId;
+    }
+
+    public String getUrl()
+    {
+        return url;
     }
 
 }

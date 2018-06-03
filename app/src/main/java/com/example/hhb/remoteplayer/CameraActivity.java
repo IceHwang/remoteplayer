@@ -26,6 +26,8 @@ public class CameraActivity extends AppCompatActivity {
 
     public static final String CAMERA_NAME ="camera_name";
     public static final String CAMERA_IMAGE_ID ="camera_image_id";
+    public static final String CAMERA_URL ="camera_url";
+
 
 
 
@@ -41,16 +43,17 @@ public class CameraActivity extends AppCompatActivity {
 
         }
 
-//        if(ContextCompat.checkSelfPermission(CameraActivity.this,
-//                Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(CameraActivity.this,new String[]{Manifest.permission.INTERNET},1);
-//
-//        }
+        if(ContextCompat.checkSelfPermission(CameraActivity.this,
+                Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(CameraActivity.this,new String[]{Manifest.permission.INTERNET},1);
+
+        }
 
 
         Intent intent =getIntent();
         String cameraName=intent.getStringExtra(CAMERA_NAME);
+        final String cameraUrl=intent.getStringExtra(CAMERA_URL);
         int cameraImageId= intent.getIntExtra(CAMERA_IMAGE_ID,0);
         Toolbar toolbar =(Toolbar)findViewById(R.id.toolbar);
         CollapsingToolbarLayout collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
@@ -80,6 +83,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(CameraActivity.this,PlayerActivity.class);
+                intent.putExtra(PlayerActivity.PLAYER_URL,cameraUrl);
                 startActivity(intent);
 
                 Toast.makeText(CameraActivity.this,"play",Toast.LENGTH_SHORT).show();
