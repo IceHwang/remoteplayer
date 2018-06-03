@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        TextView name=findViewById(R.id.nav_username);
-//        name.setText(LoginActivity.username);
+
 
         initCameras();
         RecyclerView recyclerView =findViewById(R.id.recycler_view);
@@ -123,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        View navHeaderview = navigationView.getHeaderView(0);
+        TextView name=navHeaderview.findViewById(R.id.nav_username);
+        name.setText(LoginActivity.username);
     }
 
     private void refreshCameras()
