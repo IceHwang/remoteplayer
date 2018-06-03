@@ -1,18 +1,19 @@
 package com.example.hhb.remoteplayer;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.SupportActivity;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,12 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private long exitTime=0;
+
     public static List<String> urlList = new ArrayList<>();
+
+    public static String username;
+
 
     public static final int FAILED=0;
     public static final int SUCCESS=1;
@@ -47,14 +53,55 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
+    private CheckBox remember;
+
+    private SharedPreferences preferences;
+
+    private SharedPreferences.Editor editor;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+
+            if((System.currentTimeMillis()-exitTime) > 2000)  //System.currentTimeMillis()无论何时调用，肯定大于2000
+            {
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            }
+            else
+            {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        preferences= PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        remember =findViewById(R.id.remember);
         usernameText=findViewById(R.id.input_username);
         passwordText=findViewById(R.id.input_password);
         loginButton=findViewById(R.id.btn_login);
+
+        boolean isRemember =preferences.getBoolean("isRemember",false);
+
+        if(isRemember)
+        {
+            usernameText.setText(preferences.getString("username",""));
+            passwordText.setText(preferences.getString("password",""));
+            remember.setChecked(true);
+        }
+
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +120,8 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("验证中...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         final String username = usernameText.getText().toString();
@@ -114,40 +162,23 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
 
 
-
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        onLoginFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 10000);
-
-
-
-
     }
 
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_SIGNUP) {
-//            if (resultCode == RESULT_OK) {
-//
-//                // TODO: Implement successful signup logic here
-//                // By default we just finish the Activity and log them in automatically
-//                this.finish();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        // disable going back to the MainActivity
-//        moveTaskToBack(true);
-//    }
-//
     public void onLoginSuccess() {
+        editor=preferences.edit();
+        if (remember.isChecked())
+        {
+            editor.putBoolean("isRemember",true);
+            editor.putString("username",usernameText.getText().toString());
+            editor.putString("password",passwordText.getText().toString());
+        }
+        else
+        {
+            editor.clear();
+        }
+        editor.apply();
+
+        username=usernameText.getText().toString();
         loginButton.setEnabled(true);
         finish();
         Intent intent=new Intent(LoginActivity.this,MainActivity.class);
@@ -155,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "登录失败", Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
         loginButton.setEnabled(true);
     }

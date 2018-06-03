@@ -86,7 +86,6 @@ public class CameraActivity extends AppCompatActivity {
                 intent.putExtra(PlayerActivity.PLAYER_URL,cameraUrl);
                 startActivity(intent);
 
-                Toast.makeText(CameraActivity.this,"play",Toast.LENGTH_SHORT).show();
             }
         });
 
